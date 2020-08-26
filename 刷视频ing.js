@@ -1,132 +1,104 @@
-var apps = [
-    "com.kuaishou.nebula",         //快手极速版
-    "com.jm.video",                //刷宝
-];
+//权限检查
+if (!requestScreenCapture()) {
+    toast("请求截图失败");
+    exit();
+}
 
-main(apps)
+funcs = [runShuabaoAndKuaishou, Runhuoshan]
+main(funcs)
 
-function main(apps) {
-    auto();
-
-    for (var i = 0; i < 21; i++) {
-        for (var i in apps) {
-            run(apps[i]);
+function main(funcs) {
+    while (true) {
+        for (i in funcs) {
+            try {
+                funcs[i]()
+            } catch (error) {
+                log(error)
+            }
+            toastLog("执行完一个func, 休息一下！")
+            sleep(60 * 1000)
         }
     }
 }
 
 
-function run(app) {
+/**
+ * 
+ * 
+ * 
+ * 快手和刷宝
+ * 
+ * 
+ * 
+ * 
+ */
 
-    closeApp(app)
+function runShuabaoAndKuaishou() {
+    auto()
+    var apps = [
+        "com.jm.video",                //刷宝
+        "com.kuaishou.nebula",         //快手极速版
+    ];
 
-    if (!launchApp(app)) {
-        toast("没有打开 ".concat(app, " 终止程序"));
-        return;
+    function run(app) {
+
+        closeApp(app)
+    
+        myLaunchApp(app)
+    
+        if (app == "com.kuaishou.nebula") {
+            swipeKuaishou();
+        } else {
+            swipeVideoShuaBao();
+        }
+        closeApp(app);
     }
 
-    if (app == "com.kuaishou.nebula") {
-        swipeKuaishou();
-    } else {
-        swipeVideo2();
-    }
-
-
-    closeApp(app);
+    run(apps[0]);
+    run(apps[1]);
 }
 
-function launchApp(app) {
-    toast("启动 ".concat(app))
-
-    launchPackage(app)
-    sleep(8000)
-    if (currentPackage() == app) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function swipeVideo2() {
+function swipeVideoShuaBao() {
     sleep(5000)
 
     for (var i = 0; i < 10 * 12; i++) {
-        if (i % 2 == 0) {
-            Swipe(500, 1300, 500, 500)
+        if (i % 5 == 0) {
+            back()
+            sleep(1000)
         }
-        toast("已经运行".concat((i * 5).toString(), "秒"));
+        swipeShortVedio();
+        toastLog("已经运行".concat((i * 5).toString(), "秒"));
         sleep(1000 * 5)
     }
 }
 
-function closeApp(app) {
 
-    toast("结束 ".concat(app));
-
-    shell('am force-stop ' + app, true);
-
-    sleep(5000);
-}
 
 function swipeKuaishou() {
     //常量设置
-    var AppName = "快手极速版";
-    var AppName_JB = "快手极速版脚本";
 
-    var 金币转圈 = id("redFloat");
-    var 金币转圈x = 127.5;
-    var 金币转圈y = 1218.5;
-    var 点赞 = id("like_button");
-    var 现金收益 = text("现金收益");
-    var 去签到 = text("去签到");
-    var 立即签到 = text("立即签到");
-    var 今天已签 = textContains("今天已签");
     var 设置青少年模式 = text("设置青少年模式");
     var 我知道了 = text("我知道了");
     var 拖动滑块 = text("拖动滑块");
-    var 拖动滑块x = 123;
-    var 拖动滑块y = 976.5;
+    var 拖动滑块x = 109;
+    var 拖动滑块y = 653;
     var 立即邀请 = text("立即邀请");
-
-    if (!requestScreenCapture()) {
-        toast("请求截图失败");
-        stop();
-    }
 
     /**
      * 滑动视频
      */
-    slidingVideo = function () {
-        while (true) {
-            //检测青少年模式
-            if (设置青少年模式.findOne(1000) != null) {
-                console.log("设置青少年模式");
-                sleep(1000);
-                我知道了.findOne().click();
-            }
-            //立即邀请
-            if (立即邀请.findOne(1000) != null) {
-                console.log("立即邀请");
-                sleep(1000);
-                back();
-            }
+     function slidingVideo() {
+        for (var i = 0; i < 10 * 12; i++) {
             //检测滑块
             if (拖动滑块.findOne(1000) != null) {
-                console.log("拖动滑块");
+                toastLog("拖动滑块");
                 dragSlider();
             }
-
-            sleep(5000)
-
-            for (var i = 0; i < 10 * 12; i++) {
-                if (i % 2 == 0) {
-                    Swipe(500, 1300, 500, 500)
-                }
-                toast("已经运行".concat((i * 5).toString(), "秒"));
-                sleep(1000 * 5)
-            }
-
+            swipeShortVedio();
+            toastLog("已经运行".concat((i * 5).toString(), "秒"));
+            sleep(1000 * 1)
         }
+
     }
 
     /**
@@ -134,18 +106,18 @@ function swipeKuaishou() {
      * @param {图片} img 
      * @param {分辨率} ratio 
      */
-    discernSlidingblock = function (img, ratio) {
+     function discernSlidingblock(img, ratio) {
         //创建识别变量
         var temp, temp2, x, y, num, color, p, temp3, arr1;
         //分析设备分辨率
         if (ratio == 720) {
             var tb = [348, 253, 691, 638, 81]
-            log("您的设备分辨率为：720p");
+            toastLog("您的设备分辨率为：720p");
         } else if (ratio == 1080) {
             var tb = [463, 387, 912, 831, 125]
-            log("您的设备分辨率为：1080p");
+            toastLog("您的设备分辨率为：1080p");
         } else {
-            log("当前设备分辨率不符合规范")
+            toastLog("当前设备分辨率不符合规范")
             return -2
         }
         num = Math.ceil(tb[4] / 3.3 - 4);
@@ -200,7 +172,7 @@ function swipeKuaishou() {
                         }
                     } catch (error) {
                         //出错
-                        console.log("识别失败，错误原因：" + error);
+                        toastLog("识别失败，错误原因：" + error);
                         return -1;
                     }
                     y = --y;
@@ -211,7 +183,7 @@ function swipeKuaishou() {
         try {
             img.recycle();
         } catch (error) {
-            console.log("识别失败，错误原因：" + error);
+            toastLog("识别失败，错误原因：" + error);
         }
         return -1;
     }
@@ -220,15 +192,15 @@ function swipeKuaishou() {
      * 拖动滑块
      * 
      */
-    dragSlider = function () {
-        for (var i = 0; i < 0; i++) { sleep(1000); log(i); }
+     function dragSlider() {
+        for (var i = 0; i < 0; i++) { sleep(1000); toastLog(i); }
         while (true) {
             img = images.captureScreen();
             if (img) {
-                log("截图成功。进行识别滑块！");
+                toastLog("截图成功。进行识别滑块！");
                 break;
             } else {
-                log('截图失败,重新截图');
+                toastLog('截图失败,重新截图');
             }
         }
         var x = discernSlidingblock(img, device.width) + 65
@@ -238,18 +210,54 @@ function swipeKuaishou() {
             randomSwipe(拖动滑块x, 拖动滑块y, x, 拖动滑块y)
             return true;
         } else {
+            toastLog("识别有误，请确认是否在滑块界面");
             return false;
-            console.log("识别有误，请确认是否在滑块界面");
         }
     }
 
     slidingVideo();
 }
 
+/**
+ * 
+ * 
+ *   火山极速版
+ * 
+ * 
+ * 
+ */
+
+function Runhuoshan() {
+
+    function watchVideo() {
+        toastLog("进入视频页")
+        for (let i = 1; i < 120; i++) {
+            if (i % 5 == 0) {
+                back()
+                sleep(1000)
+            }
+            sleep(5 * 1000);
+            toastLog("刷的次数为: ".concat(i))
+            swipeShortVedio()
+        }
+    }
+
+    auto();
+    toastLog("开始火山极速版")
+
+    myLaunchApp("com.ss.android.ugc.livelite")
+    watchVideo()
+    closeApp("com.ss.android.ugc.livelite")
+}
 
 
-
-
+/**
+ * 
+ * 
+ *     工具类
+ * 
+ * 
+ */
 
 /**
  * 真人模拟滑动函数 （滑块滑动）
@@ -349,15 +357,10 @@ function bezierCreate(x1, y1, x2, y2, x3, y3, x4, y4) {
 
     return array
 }
-/**
- * 仿真随机带曲线滑动  (视频滑动)
- * @param {起点x} qx 
- * @param {起点y} qy 
- * @param {终点x} zx 
- * @param {终点y} zy 
- * @param {过程耗时单位毫秒} time 
- */
-function sml_move(qx, qy, zx, zy, time) {
+
+//仿真随机带曲线滑动  
+//qx, qy, zx, zy, time 代表起点x,起点y,终点x,终点y,过程耗时单位毫秒
+function swipeEx(qx, qy, zx, zy, time) {
     var xxy = [time];
     var point = [];
     var dx0 = {
@@ -382,7 +385,7 @@ function sml_move(qx, qy, zx, zy, time) {
         eval("point.push(dx" + i + ")");
 
     };
-    log(point[3].x)
+    // log(point[3].x)
 
     for (let i = 0; i < 1; i += 0.08) {
         xxyy = [parseInt(bezier_curves(point, i).x), parseInt(bezier_curves(point, i).y)]
@@ -391,9 +394,10 @@ function sml_move(qx, qy, zx, zy, time) {
 
     }
 
-    log(xxy);
+    // log(xxy);
     gesture.apply(null, xxy);
 };
+
 function bezier_curves(cp, t) {
     cx = 3.0 * (cp[1].x - cp[0].x);
     bx = 3.0 * (cp[2].x - cp[1].x) - cx;
@@ -412,3 +416,31 @@ function bezier_curves(cp, t) {
     result.y = (ay * tCubed) + (by * tSquared) + (cy * t) + cp[0].y;
     return result;
 };
+
+function myLaunchApp(app) {
+    toastLog("启动 ".concat(app))
+    launchPackage(app)
+    sleep(8000)
+};
+
+function closeApp(app) {
+
+    toastLog("结束 ".concat(app));
+
+    shell('am force-stop ' + app, true);
+
+    sleep(5000);
+};
+
+//查找控件的最近一个可点击的父控件
+function findClickParent(indexUi) {
+    let clickParent = indexUi.parent()
+    while (!clickParent.clickable()) {
+        clickParent = clickParent.parent()
+    }
+    return clickParent;
+}
+
+function swipeShortVedio() {
+    swipeEx(360, 1000, 400, 200, 1000);
+}

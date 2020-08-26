@@ -1,6 +1,5 @@
-auto()
 
-swipeEx(360, 1000, 400, 200, 1000);
+
 
 
 
@@ -13,7 +12,6 @@ swipeEx(360, 1000, 400, 200, 1000);
  * 
  */
 
- 
 /**
  * 真人模拟滑动函数 （滑块滑动）
  * @param {起点x} sx 
@@ -27,13 +25,13 @@ function randomSwipe(sx, sy, ex, ey) {
     var timeMax = 3000
     //设置控制点极限距离
     var leaveHeightLength = 500
- 
+
     //根据偏差距离，应用不同的随机方式
     if (Math.abs(ex - sx) > Math.abs(ey - sy)) {
         var my = (sy + ey) / 2
         var y2 = my + random(0, leaveHeightLength)
         var y3 = my - random(0, leaveHeightLength)
- 
+
         var lx = (sx - ex) / 3
         if (lx < 0) { lx = -lx }
         var x2 = sx + lx / 2 + random(0, lx)
@@ -42,25 +40,24 @@ function randomSwipe(sx, sy, ex, ey) {
         var mx = (sx + ex) / 2
         var y2 = mx + random(0, leaveHeightLength)
         var y3 = mx - random(0, leaveHeightLength)
- 
+
         var ly = (sy - ey) / 3
         if (ly < 0) { ly = -ly }
         var y2 = sy + ly / 2 + random(0, ly)
         var y3 = sy + ly + ly / 2 + random(0, y3)
-    }   
- 
+    }
+
     //获取运行轨迹，及参数
     var time = [0, random(timeMin, timeMax)]
     var track = bezierCreate(sx, sy, x2, y2, x3, y3, ex, ey)
- 
-    
+
+
     log("随机控制点A坐标：" + x2 + "," + y2)
     log("随机控制点B坐标：" + x3 + "," + y3)
     log("随机滑动时长：" + time[1])
- 
+
     //滑动
     gestures(time.concat(track))
-
 }
 /**
  * 计算滑动轨迹
@@ -72,21 +69,21 @@ function bezierCreate(x1, y1, x2, y2, x3, y3, x4, y4) {
     var numberOfPoints = 100;
     var curve = [];
     var dt = 1.0 / (numberOfPoints - 1);
- 
+
     //计算轨迹
     for (var i = 0; i < numberOfPoints; i++) {
         var ax, bx, cx;
         var ay, by, cy;
         var tSquared, tCubed;
         var result_x, result_y;
- 
+
         cx = 3.0 * (cp[1].x - cp[0].x);
         bx = 3.0 * (cp[2].x - cp[1].x) - cx;
         ax = cp[3].x - cp[0].x - cx - bx;
         cy = 3.0 * (cp[1].y - cp[0].y);
         by = 3.0 * (cp[2].y - cp[1].y) - cy;
         ay = cp[3].y - cp[0].y - cy - by;
- 
+
         var t = dt * i
         tSquared = t * t;
         tCubed = tSquared * t;
@@ -97,7 +94,7 @@ function bezierCreate(x1, y1, x2, y2, x3, y3, x4, y4) {
             y: result_y
         };
     }
- 
+
     //轨迹转路数组
     var array = [];
     for (var i = 0; i < curve.length; i++) {
@@ -110,7 +107,7 @@ function bezierCreate(x1, y1, x2, y2, x3, y3, x4, y4) {
         }
         array.push([xx, yy])
     }
- 
+
     return array
 }
 
@@ -195,4 +192,8 @@ function findClickParent(indexUi) {
         clickParent = clickParent.parent()
     }
     return clickParent;
+}
+
+function swipeShortVedio() {
+    swipeEx(360, 1000, 400, 200, 1000);
 }
