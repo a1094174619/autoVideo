@@ -66,6 +66,9 @@ function swipeVideoShuaBao() {
             back()
             sleep(1000)
         }
+        if (Math.random() > 0.7) {
+            click(654, 583)
+        }
         swipeShortVedio();
         toastLog("已经运行".concat((i * 5).toString(), "秒"));
         sleep(1000 * 5)
@@ -90,13 +93,20 @@ function swipeKuaishou() {
      function slidingVideo() {
         for (var i = 0; i < 10 * 12; i++) {
             //检测滑块
-            if (拖动滑块.findOne(1000) != null) {
+            if (拖动滑块.findOne(500) != null) {
                 toastLog("拖动滑块");
                 dragSlider();
             }
             swipeShortVedio();
+            if (i % 5 == 0) {
+                back()
+                sleep(1000)
+            }
+            if (Math.random() > 0.7) {
+                click(661, 802)
+            }
             toastLog("已经运行".concat((i * 5).toString(), "秒"));
-            sleep(1000 * 1)
+            sleep(1000 * 3)
         }
 
     }
@@ -231,10 +241,14 @@ function Runhuoshan() {
 
     function watchVideo() {
         toastLog("进入视频页")
-        for (let i = 1; i < 120; i++) {
+
+        for (let i = 1; i < 50; i++) {
             if (i % 5 == 0) {
                 back()
                 sleep(1000)
+            }
+            if (Math.random() > 0.7) {
+                click(659, 745)
             }
             sleep(5 * 1000);
             toastLog("刷的次数为: ".concat(i))
@@ -245,6 +259,7 @@ function Runhuoshan() {
     auto();
     toastLog("开始火山极速版")
 
+    closeApp("com.ss.android.ugc.livelite")
     myLaunchApp("com.ss.android.ugc.livelite")
     watchVideo()
     closeApp("com.ss.android.ugc.livelite")
@@ -443,4 +458,28 @@ function findClickParent(indexUi) {
 
 function swipeShortVedio() {
     swipeEx(360, 1000, 400, 200, 1000);
+}
+
+//是否某些特定的小时之间，用来睡觉赚金币
+function isBetweenTime(start, end) {
+    var myDate = new Date();
+    curHour = myDate.getHours();
+    toastLog("当前时间是".concat(curHour))
+    if (start <= curHour && curHour < end) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+function clickWidget (widget, seconds=1) {
+    var res = widget.findOne(1000) 
+    if (res != null) {
+        res.click()
+        sleep(seconds * 1000)
+        return true
+    } else {
+        return false
+    }
 }

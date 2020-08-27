@@ -1,9 +1,9 @@
 auto()
+toast("1")
 
-swipeEx(360, 1000, 400, 200, 1000);
-
-
-
+if (Math.random() > 0.7) {
+    click(654, 583)
+}
 
 /**
  * 

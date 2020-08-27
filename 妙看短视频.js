@@ -197,3 +197,27 @@ function findClickParent(indexUi) {
 function swipeShortVedio() {
     swipeEx(360, 1000, 400, 200, 1000);
 }
+
+//是否某些特定的小时之间，用来睡觉赚金币
+function isBetweenTime(start, end) {
+    var myDate = new Date();
+    curHour = myDate.getHours();
+    toastLog("当前时间是".concat(curHour))
+    if (start <= curHour && curHour < end) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+function clickWidget (widget, seconds=1) {
+    var res = widget.findOne(1000) 
+    if (res != null) {
+        res.click()
+        sleep(seconds * 1000)
+        return true
+    } else {
+        return false
+    }
+}
